@@ -1,0 +1,24 @@
+name: hello-world
+version: 1
+description: A small public GitHub repository lookup example.
+hosts:
+  - api.github.com
+secrets: []
+tools:
+  - name: get_repo
+    description: Get public metadata for a GitHub repository.
+    method: GET
+    url: https://api.github.com/repos/${input.owner}/${input.repo}
+    headers:
+      Accept: application/vnd.github+json
+      User-Agent: the-app-sucks
+    input_schema:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: Repository owner or organization
+        repo:
+          type: string
+          description: Repository name
+      required: [owner, repo]

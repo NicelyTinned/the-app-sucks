@@ -1,0 +1,2 @@
+# Copy to .dev.vars and replace this placeholder with a strong random value.
+KEY_ENCRYPTION_SECRET="replace-this-with-a-long-random-secret-at-least-32-characters"
