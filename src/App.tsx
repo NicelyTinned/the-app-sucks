@@ -459,7 +459,7 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [toast, showToast] = useToast();
+  const { toast, showToast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const activeChat = chats.find((chat) => chat.id === activeChatId) || null;

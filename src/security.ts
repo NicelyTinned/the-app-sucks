@@ -1,6 +1,15 @@
 const enc = new TextEncoder();
 const dec = new TextDecoder();
 
+// TypeScript 5.9+ models Uint8Array buffers as ArrayBufferLike. Web Crypto's
+// BufferSource definitions require an ArrayBuffer-backed view, so copy bytes
+// into a fresh ArrayBuffer before passing them to subtle crypto APIs.
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const buffer = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(buffer).set(bytes);
+  return buffer;
+}
+
 function toHex(bytes: Uint8Array): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
@@ -45,7 +54,7 @@ export async function sha256(value: string): Promise<string> {
 export async function hashPassword(password: string, saltHex: string): Promise<string> {
   const key = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"]);
   const bits = await crypto.subtle.deriveBits(
-    { name: "PBKDF2", salt: fromHex(saltHex), iterations: 120_000, hash: "SHA-256" },
+    { name: "PBKDF2", salt: toArrayBuffer(fromHex(saltHex)), iterations: 120_000, hash: "SHA-256" },
     key,
     256
   );
@@ -88,7 +97,11 @@ export async function encryptText(secret: string, value: string): Promise<{ ciph
 
 export async function decryptText(secret: string, cipher: string, iv: string): Promise<string> {
   const key = await encryptionKey(secret);
-  const plaintext = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromBase64(iv) }, key, fromBase64(cipher));
+  const plaintext = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: toArrayBuffer(fromBase64(iv)) },
+    key,
+    toArrayBuffer(fromBase64(cipher))
+  );
   return dec.decode(plaintext);
 }
 
