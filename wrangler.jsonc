@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "the-app-sucks",
+  "name": "site",
   "main": "src/worker.ts",
   "compatibility_date": "2026-11-13",
   "assets": {
@@ -13,7 +13,7 @@
     {
       "binding": "DB",
       "database_name": "the-app-sucks-db",
-      "database_id": "REPLACE_WITH_DATABASE_ID",
+      "database_id": "46bd58b2-3857-4c7f-83b5-eb519b23217c",
       "migrations_dir": "migrations"
     }
   ]
